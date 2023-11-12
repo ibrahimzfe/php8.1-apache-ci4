@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  ci4_app:
+    image: ibrahimzfe/php8.1-apache-ci4:latest
+    container_name: ci4_app
+    networks:
+      - ci4
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DATABASE_HOST: mysql_db 
+      
+  mysql_db:
+    image: mysql:8.0-debian
+    container_name: mysql_db
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql123
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_USER: ci4_user
+      MYSQL_PASSWORD: ci4_pass
+      MYSQL_DATABASE: ci4
+    networks:
+      - ci4
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+networks:
+  ci4:
+    external: true
+
+volumes:
+  mysql_data:
+    driver: local
